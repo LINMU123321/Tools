@@ -1,12 +1,17 @@
 # -*- coding:utf-8 -*-
 from requests import post, get, exceptions
 import time
-from androidhelper import Android
-from os.path import exists, join
-from os import mkdir
 
-### Version: 1.1.6
-### UpdateTime:Jan.6th 2018
+try:
+    from androidhelper import Android
+except Exception as e:
+    print('no module named androidhelper')
+from os.path import exists, join
+from os import mkdir, removedirs
+
+
+### Version: 1.1.7
+### UpdateTime:Feb.4th 2018
 
 # Decode QRcode to SSurl
 def qr2str(pic_name):
@@ -18,13 +23,16 @@ def qr2str(pic_name):
     # print(r)
     if not r == '':
         ss = eval(r)['data'].replace('\\', '')
-        print(ss+'\n')
-        with open(join('SSRSet', time.strftime('%Y-%m-%d', time.localtime(time.time()))+'.txt'), 'a+') as file:
+        print(ss + '\n')
+        with open(join('SSRSet', time.strftime('%Y-%m-%d', time.localtime(time.time())) + '.txt'), 'a+') as file:
             file.write(pic_name.split('.')[0] + '\t' + ss + '\n')
         # copy a ssurl to clipboard
         if pic_name == 'us01.png':
-            droid = Android()
-            droid.setClipboard(ss)
+            try:
+                droid = Android()
+                droid.setClipboard(ss)
+            except Exception as e:
+                print('not in a android env')
             # droid.setClipboard('clippersth')
             # print droid.getClipboard()
             # 或者直接 print droid().getClipboard()
@@ -34,31 +42,35 @@ def qr2str(pic_name):
 # Download QRcode from target url
 def down_qr(url):
     headers = {
-            "Accept":"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
-            "Accept-Encoding":"gzip, deflate, br",
-            "Accept-Language":"zh-CN,zh;q=0.9,zh-TW;q=0.8,en;q=0.7",
-            "Cache-Control":"no-cache",
-            "Connection":"keep-alive",
-            "DNT":'1',
-            "Host":"freess.cx",
-            "Pragma":"no-cache",
-            "Upgrade-Insecure-Requests":'1',
-            "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36"
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Accept-Language": "zh-CN,zh;q=0.9,zh-TW;q=0.8,en;q=0.7",
+        "Cache-Control": "no-cache",
+        "Connection": "keep-alive",
+        "DNT": '1',
+        "Host": "freess.cx",
+        "Pragma": "no-cache",
+        "Upgrade-Insecure-Requests": '1',
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36"
     }
     pic_name = url.split('/')[5]
     try:
         print 'Trying to get target QRcode' + pic_name
-        result = get(url, headers=headers)#, timeout=10
+        result = get(url, headers=headers)  # , timeout=10
     except exceptions, e:
         print '获取失败' + e
     with open(join('SSRSet', pic_name), 'wb') as file:
         file.write(result.content)
-        print pic_name+'saved'
+        print pic_name + 'saved'
     return pic_name
 
+
 def main():
-    if not exists('SSRSet'):
-        mkdir('SSRSet') 
+    if exists('SSRSet'):
+        removedirs('SSRSet')
+        mkdir('SSRSet')
+    else:
+        mkdir('SSRSet')
     ss_url = ['https://freess.cx/images/servers/jp01.png',
               'https://freess.cx/images/servers/jp02.png',
               'https://freess.cx/images/servers/jp03.png',
