@@ -7,7 +7,7 @@ try:
 except Exception as e:
     print('no module named androidhelper')
 from os.path import exists, join
-from os import mkdir, removedirs
+from os import mkdir, remove, listdir
 
 
 ### Version: 1.1.7
@@ -17,14 +17,14 @@ from os import mkdir, removedirs
 def qr2str(pic_name):
     # this is a online website server which could decode QRcode
     upload_url = 'http://jiema.wwei.cn/fileupload.html?op=jiema&token=4fdaa2d1c06883389da0cd96dd0cf3852a0700a2'
-    files = {'file': open(join('SSRSet', pic_name), 'rb')}
+    files = {'file': open(join('../SSRSet/', pic_name), 'rb')}
     # 'r' is a response for post
     r = post(upload_url, files=files).text
     # print(r)
     if not r == '':
         ss = eval(r)['data'].replace('\\', '')
         print(ss + '\n')
-        with open(join('SSRSet', time.strftime('%Y-%m-%d', time.localtime(time.time())) + '.txt'), 'a+') as file:
+        with open(join('../SSRSet/', time.strftime('%Y-%m-%d', time.localtime(time.time())) + '.txt'), 'a+') as file:
             file.write(pic_name.split('.')[0] + '\t' + ss + '\n')
         # copy a ssurl to clipboard
         if pic_name == 'us01.png':
@@ -59,18 +59,22 @@ def down_qr(url):
         result = get(url, headers=headers)  # , timeout=10
     except exceptions, e:
         print '获取失败' + e
-    with open(join('SSRSet', pic_name), 'wb') as file:
+    with open(join('../SSRSet/', pic_name), 'wb') as file:
         file.write(result.content)
         print pic_name + ' saved'
     return pic_name
 
 
 def main():
-    if exists('/SSRSet'):
-        removedirs('/SSRSet')
-        mkdir('/SSRSet')
+    if exists('../SSRSet'):
+        for i in listdir('../SSRSet'):
+            try:
+                remove(i)
+            except Exception as e:
+                print(e)
+        # mkdir('../SSRSet')
     else:
-        mkdir('SSRSet')
+        mkdir('../SSRSet')
     ss_url = ['https://freess.cx/images/servers/jp01.png',
               'https://freess.cx/images/servers/jp02.png',
               'https://freess.cx/images/servers/jp03.png',

@@ -7,7 +7,7 @@ __pycache__/
 *.so
 
 # pesonal dir
-files/SSRSet
+SSRSet
 .idea
 
 # Distribution / packaging
