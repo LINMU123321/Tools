@@ -61,14 +61,14 @@ def down_qr(url):
         print '获取失败' + e
     with open(join('SSRSet', pic_name), 'wb') as file:
         file.write(result.content)
-        print pic_name + 'saved'
+        print pic_name + ' saved'
     return pic_name
 
 
 def main():
-    if exists('SSRSet'):
-        removedirs('SSRSet')
-        mkdir('SSRSet')
+    if exists('/SSRSet'):
+        removedirs('/SSRSet')
+        mkdir('/SSRSet')
     else:
         mkdir('SSRSet')
     ss_url = ['https://freess.cx/images/servers/jp01.png',
