@@ -50,14 +50,15 @@ def moveFile(sour, dest):
 
 
 def main():
-    # mkdir(destination_dir)
+    if not exists(destination_dir):
+        mkdir(destination_dir)
     if not exists(temp):
         mkdir(temp)
     copyFile(source_dir, temp)
     renameFile('.jpg')
     judgeFile()
     moveFile(temp, destination_dir)
-    chdir(dirname(presentDir))
+    chdir(presentDir)
     rmdir(temp)
 
 
