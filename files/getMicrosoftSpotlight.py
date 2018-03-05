@@ -1,15 +1,14 @@
-from os import path, listdir, renames, chdir, remove, mkdir, chmod, rmdir
+from os import path, listdir, renames, chdir, remove, mkdir, chmod, rmdir, getcwd
 import shutil
-from os.path import exists, dirname
 from PIL import Image
 import getpass
 
-presentDir = dirname(__file__)
+presentDir = getcwd()
 source_dir = r'C:\Users\{username}\AppData\Local\Packages\Microsoft.Windows.ContentDeliveryManager_cw5n1h2txyewy\LocalState\Assets'.format(
     username=getpass.getuser())
 temp = path.join(presentDir, 'temp')
-# destination_dir = path.join(presentDir, 'win10好图')
-destination_dir = r'E:\win10好图'
+# destination_dir = path.join(presentDir, 'win10Spotlight')
+destination_dir = r'E:\win10Spotlight'
 
 
 def copyFile(source_dir, temp):
@@ -50,9 +49,9 @@ def moveFile(sour, dest):
 
 
 def main():
-    if not exists(destination_dir):
+    if not path.exists(destination_dir):
         mkdir(destination_dir)
-    if not exists(temp):
+    if not path.exists(temp):
         mkdir(temp)
     copyFile(source_dir, temp)
     renameFile('.jpg')
