@@ -10,9 +10,13 @@ from os.path import exists, join
 from os import mkdir, remove, listdir
 
 
-### Version: 1.1.7
-### UpdateTime:Feb.4th 2018
-
+'''
+Version: 1.2.0
+UpdateTime: March 31th, 2018
+UpdateContent: 1, Old site has changed it's domain name;
+               2, Fix error cannot remove files correctly;
+               3, Change to Python3.
+'''
 # Decode QRcode to SSurl
 def qr2str(pic_name):
     # this is a online website server which could decode QRcode
@@ -22,6 +26,7 @@ def qr2str(pic_name):
     r = post(upload_url, files=files).text
     # print(r)
     if not r == '':
+        # print(r)
         ss = eval(r)['data'].replace('\\', '')
         print(ss + '\n')
         with open(join('../SSRSet/', time.strftime('%Y-%m-%d', time.localtime(time.time())) + '.txt'), 'a+') as file:
@@ -48,20 +53,20 @@ def down_qr(url):
         "Cache-Control": "no-cache",
         "Connection": "keep-alive",
         "DNT": '1',
-        "Host": "freess.cx",
+        "Host": "my.freess.org",
         "Pragma": "no-cache",
         "Upgrade-Insecure-Requests": '1',
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36"
     }
     pic_name = url.split('/')[5]
     try:
-        print 'Trying to get target QRcode' + pic_name
+        print('Trying to get target QRcode' + pic_name) 
         result = get(url, headers=headers)  # , timeout=10
-    except exceptions, e:
-        print '获取失败' + e
+    except Exception as e:
+        print('Failed to get target QRcode ' + e) 
     with open(join('../SSRSet/', pic_name), 'wb') as file:
         file.write(result.content)
-        print pic_name + ' saved'
+        print(pic_name + ' has been saved') 
     return pic_name
 
 
@@ -69,18 +74,18 @@ def main():
     if exists('../SSRSet'):
         for i in listdir('../SSRSet'):
             try:
-                remove(i)
+                remove(join('../SSRSet',i))
             except Exception as e:
                 print(e)
         # mkdir('../SSRSet')
     else:
         mkdir('../SSRSet')
-    ss_url = ['https://freess.cx/images/servers/jp01.png',
-              'https://freess.cx/images/servers/jp02.png',
-              'https://freess.cx/images/servers/jp03.png',
-              'https://freess.cx/images/servers/us01.png',
-              'https://freess.cx/images/servers/us02.png',
-              'https://freess.cx/images/servers/us03.png']
+    ss_url = ['https://my.freess.org/images/servers/jp01.png',
+              'https://my.freess.org/images/servers/jp02.png',
+              'https://my.freess.org/images/servers/jp03.png',
+              'https://my.freess.org/images/servers/us01.png',
+              'https://my.freess.org/images/servers/us02.png',
+              'https://my.freess.org/images/servers/us03.png']
     for url in ss_url:
         qr2str(down_qr(url))
         # down_qr(url)
